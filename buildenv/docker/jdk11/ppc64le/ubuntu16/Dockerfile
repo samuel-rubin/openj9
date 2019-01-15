@@ -29,7 +29,7 @@ RUN apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     software-properties-common \
     python-software-properties \
-  && add-apt-repository ppa:ubuntu-toolchain-r/test \
+  && add-apt-repository ppa:jonathonf/gcc \
   && apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     autoconf \
@@ -39,7 +39,7 @@ RUN apt-get update \
     cmake \
     file \
     g++-7 \
-    gcc-7 \
+    gcc-7=7.3.0-23ubuntu2~16.04.york0 \
     git \
     git-core \
     libasound2-dev \

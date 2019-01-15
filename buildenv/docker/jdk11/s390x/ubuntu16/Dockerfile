@@ -39,7 +39,7 @@ RUN apt-get update \
     cpio \
     file \
     g++-7 \
-    gcc-7 \
+    gcc-7=7.4.0-1ubuntu1~14.04~ppa1 \
     git \
     git-core \
     libasound2-dev \
