@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corp. and others
+ * Copyright (c) 2019, 2019 IBM Corp. and others
  *
  * This program and the accompanying materials are made available under
  * the terms of the Eclipse Public License 2.0 which accompanies this
@@ -19,42 +19,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
  *******************************************************************************/
+package org.openj9.test.openssl;
 
-/**
- * @file testjep178.h
- * @brief Provide common definitions for JEP178 tests. 
- */
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-#if !defined(_testjep178_h_)
-#define _testjep178_h_ 1
+@Test(groups={ "level.sanity" })
+public class TestOpenSSL {	
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#if defined(WIN32)
-#include <windows.h>
-#elif defined(LINUX) || defined(AIXPPC) || defined(OSX)
-#include <dlfcn.h>
-#else
-#include <dll.h>
-#include "atoe.h"
-#endif
-#include "j9comp.h"
-#include "jni.h"
-
-#define J9JEP178_MAXIMUM_JVM_OPTIONS 10
-#define J9PATH_LENGTH_MAXIMUM 1024
-#define J9VM_OPTION_MAXIMUM_LENGTH 1024
-#if defined(WIN32)
-#define J9PATH_DIRECTORY_SEPARATOR '\\'
-#define J9PATH_JVM_LIBRARY "jvm.dll"
-#else /* defined(WIN32) */
-#define J9PATH_DIRECTORY_SEPARATOR '/'
-#if defined(OSX)
-#define J9PATH_JVM_LIBRARY "libjvm.dylib"
-#else /* defined(OSX) */
-#define J9PATH_JVM_LIBRARY "libjvm.so"
-#endif /* defined(OSX) */
-#endif /* defined(WIN32) */
-
-#endif /* !defined(_testjep178_h_) */
+    @Test(expectedExceptions = UnsatisfiedLinkError.class)
+	public final void loadJnCrypto() {
+        // Test should throw UnsatisfiedLinkError, as lib should already be loaded
+        System.loadLibrary("jncrypto");
+    }
+}
