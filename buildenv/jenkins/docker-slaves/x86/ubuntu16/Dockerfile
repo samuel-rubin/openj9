@@ -37,7 +37,6 @@ RUN apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     software-properties-common \
     python-software-properties \
-  && add-apt-repository ppa:ubuntu-toolchain-r/test \
   && apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     ant \
@@ -50,9 +49,7 @@ RUN apt-get update \
     curl \
     file \
     g++-4.8 \
-    g++-7 \
     gcc-4.8 \
-    gcc-7 \
     gdb \
     git \
     git-core \
@@ -91,6 +88,16 @@ RUN rm /usr/bin/c++ /usr/bin/g++ /usr/bin/cc /usr/bin/gcc \
   && ln -s g++-4.8 /usr/bin/g++ \
   && ln -s gcc /usr/bin/cc \
   && ln -s gcc-4.8 /usr/bin/gcc
+  
+# Add the GCC-7.3 Binary
+RUN cd /usr/local \
+  && wget -O gcc-7.tar.xz "https://ci.adoptopenjdk.net/userContent/gcc/gcc730+ccache.x86_64.tar.xz" \
+  && tar -xJf gcc-7.tar.xz --strip-components=1 \
+  && rm -rf gcc-7.tar.xz
+  
+# Create links for GCC to access the C library
+RUN ln -ns /usr/lib/x86_64-linux-gnu /usr/lib64 \
+  && ln -ns /usr/include/x86_64-linux-gnu/* /usr/local/include || true
 
 # Add user home/USER and copy authorized_keys and known_hosts
 RUN useradd -ms /bin/bash ${USER} \
@@ -100,6 +107,9 @@ COPY known_hosts /home/${USER}/.ssh/known_hosts
 RUN chown -R ${USER}:${USER} /home/${USER} \
   && chmod 644 /home/${USER}/.ssh/authorized_keys \
   && chmod 644 /home/${USER}/.ssh/known_hosts
+  
+# Run ldconfig to create necessary links and cache to shared libraries
+RUN ldconfig
 
 # Set up sshd config
 RUN mkdir /var/run/sshd \
