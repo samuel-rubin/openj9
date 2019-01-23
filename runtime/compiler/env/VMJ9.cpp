@@ -22,6 +22,10 @@
 
 #define J9_EXTERNAL_TO_VM
 
+#if defined (_MSC_VER) && (_MSC_VER < 1900)
+#define snprintf _snprintf
+#endif
+
 #include "env/VMJ9.h"
 
 #include <algorithm>
@@ -2256,20 +2260,10 @@ TR_J9VMBase::allocateRelocationData(TR::Compilation * comp, uint32_t numBytes)
    }
 
 
-static void switchCodeCache(TR::Compilation *comp, TR::CodeCache *oldCache, TR::CodeCache *newCache)
-   {
-   comp->switchCodeCache(newCache);
-   // If the old CC had pre-loaded code, the current compilation may have initialized it and will therefore depend on it
-   // so we should initialize it in the new CC as well
-   // XXX: We could avoid this if we knew for sure that this compile wasn't the one who initialized it
-   if (newCache && oldCache->isCCPreLoadedCodeInitialized())
-      newCache->getCCPreLoadedCodeAddress(TR_numCCPreLoadedCode, comp->cg());
-   }
-
 uint8_t *
 TR_J9VMBase::allocateCodeMemory(TR::Compilation * comp, uint32_t warmCodeSize, uint32_t coldCodeSize, uint8_t ** coldCode, bool isMethodHeaderNeeded)
    {
-   TR::CodeCache * codeCache = comp->getCurrentCodeCache(); // This is the reserved code cache
+   TR::CodeCache * codeCache = comp->cg()->getCodeCache(); // This is the reserved code cache
    if (NULL == codeCache)
       {
       if (isAOT_DEPRECATED_DO_NOT_USE())
@@ -2298,14 +2292,14 @@ TR_J9VMBase::allocateCodeMemory(TR::Compilation * comp, uint32_t warmCodeSize, u
 
    acquireClassUnloadMonitorAndReleaseVMAccessIfNeeded(comp, hadVMAccess, hadClassUnloadMonitor);
 
-   if (codeCache != comp->getCurrentCodeCache())
+   if (codeCache != comp->cg()->getCodeCache())
       {
 #ifdef MCT_DEBUG
       fprintf(stderr, "comp %p ID=%d switched cache to %p\n", comp, comp->getCompThreadID(), codeCache);
 #endif
       TR_ASSERT(!codeCache || codeCache->isReserved(), "Substitute code cache isn't marked as reserved");  // Either we didn't get a code cache, or the one we should get is
       comp->setRelocatableMethodCodeStart(warmCode);
-      switchCodeCache(comp, comp->getCurrentCodeCache(), codeCache);
+      comp->cg()->switchCodeCacheTo(codeCache);
       }
 
    if (NULL == warmCode)
@@ -2330,7 +2324,7 @@ TR_J9VMBase::resizeCodeMemory(TR::Compilation * comp, U_8 *bufferStart, uint32_t
    {
    // I don't see a reason to acquire VM access for this call
    TR::VMAccessCriticalSection resizeCodeMemory(this);
-   TR::CodeCache * codeCache = comp->getCurrentCodeCache();
+   TR::CodeCache * codeCache = comp->cg()->getCodeCache();
    codeCache->resizeCodeMemory(bufferStart, numBytes);
    }
 
@@ -2348,14 +2342,14 @@ TR_J9VMBase::supportsCodeCacheSnippets()
 void *
 TR_J9VMBase::getAllocationPrefetchCodeSnippetAddress(TR::Compilation * comp)
    {
-   TR::CodeCache * codeCache = comp->getCurrentCodeCache();
+   TR::CodeCache * codeCache = comp->cg()->getCodeCache();
    return codeCache->getCCPreLoadedCodeAddress(TR_AllocPrefetch, comp->cg());
    }
 
 void *
 TR_J9VMBase::getAllocationNoZeroPrefetchCodeSnippetAddress(TR::Compilation * comp)
    {
-   TR::CodeCache * codeCache = comp->getCurrentCodeCache();
+   TR::CodeCache * codeCache = comp->cg()->getCodeCache();
    return codeCache->getCCPreLoadedCodeAddress(TR_NonZeroAllocPrefetch, comp->cg());
    }
 #endif
@@ -4723,11 +4717,21 @@ TR_J9VMBase::getOverflowSafeAllocSize()
    }
 
 void
+TR_J9VMBase::unsupportedByteCode(TR::Compilation * comp, U_8 opcode)
+   {
+   char errMsg[40];
+   snprintf(errMsg, 40, "bytecode %d not supported by JIT", opcode);
+   comp->failCompilation<TR::CompilationException>(errMsg);
+   }
+
+void
 TR_J9VMBase::unknownByteCode(TR::Compilation * comp, U_8 opcode)
    {
    // an unknown bytecode may be seen if the method contains a breakpoint, in that case we should abort the compile
    //
-   comp->failCompilation<TR::CompilationException>("Unknown bytecode");
+   char errMsg[40];
+   snprintf(errMsg, 40, "Unknown bytecode %d to JIT", opcode);
+   comp->failCompilation<TR::CompilationException>(errMsg);
    }
 
 char*
@@ -5605,7 +5609,7 @@ void
 TR_J9VMBase::reserveTrampolineIfNecessary(TR::Compilation * comp, TR::SymbolReference * symRef, bool inBinaryEncoding)
    {
    TR::VMAccessCriticalSection reserveTrampolineIfNecessary(this);
-   TR::CodeCache *curCache = comp->getCurrentCodeCache();
+   TR::CodeCache *curCache = comp->cg()->getCodeCache();
    bool isRecursive = false;
 
    if (NULL == curCache)
@@ -5722,7 +5726,7 @@ TR_J9VMBase::reserveTrampolineIfNecessary(TR::Compilation * comp, TR::SymbolRefe
 
    if (newCache != curCache)
       {
-      switchCodeCache(comp, curCache, newCache);
+      comp->cg()->switchCodeCacheTo(newCache);
       }
    TR_ASSERT(newCache->isReserved(), "assertion failure"); // MCT
    }
