@@ -36,6 +36,7 @@ ENV USER="jenkins"
 RUN apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     software-properties-common \
+  && add-apt-repository ppa:ubuntu-toolchain-r/test \
   && apt-get update \
   && apt-get install -qq -y --no-install-recommends \
     ant \
@@ -46,7 +47,7 @@ RUN apt-get update \
     g++-4.8 \
     g++-7 \
     gcc-4.8 \
-    gcc-7=7.3.0-27ubuntu1~18.04 \
+    gcc-7 \
     gdb \
     git \
     openssh-client \
