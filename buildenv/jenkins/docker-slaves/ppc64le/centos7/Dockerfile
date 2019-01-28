@@ -50,8 +50,6 @@ RUN yum -y update \
     fontconfig \
     fontconfig-devel \
     freetype-devel \
-    gcc-4.8.5 \
-    gcc-c++-4.8.5 \
     gettext \
     glibc \
     glibc-common \
@@ -105,11 +103,6 @@ RUN cd /usr/src/ \
 RUN wget -O - http://cpanmin.us | perl - --self-upgrade \
   && cpanm Text::CSV \
   && cpanm JSON
-
-# Setup links to GCC-4.8.5
-RUN rm /usr/bin/c++ /usr/bin/cc \
-  && ln -s g++ /usr/bin/c++ \
-  && ln -s gcc /usr/bin/cc
 
 # Install GCC-7.3.1
 RUN cd /usr/local \
