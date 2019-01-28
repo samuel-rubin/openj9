@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2014 IBM Corp. and others
+ * Copyright (c) 2019, 2019 IBM Corp. and others
  *
  * This program and the accompanying materials are made available under
  * the terms of the Eclipse Public License 2.0 which accompanies this
@@ -20,43 +20,18 @@
  * SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
  *******************************************************************************/
 
-import java.util.*;
+package org.openj9.test.openssl;
 
-public class TraceGroup{
+import java.security.KeyFactory;
 
-    private String name = null;
-    private ArrayList tplist = null;
-    private int count = 0;
-
-    public TraceGroup(String name){  
-        this.name = name;
-        count = 0;
-        tplist = new ArrayList();
-    }
-
-    public String getName(){
-        return name;
-    }
-
-    public synchronized int addTPID(int tpid){
-        tplist.add( new Integer(tpid) );
-        return count++;
-    }
-
-    public int[] getTPIDS(){
-        int tpids[] = new int[tplist.size()];
-        Object ints[] = tplist.toArray();
-
-
-        for (int i = 0; i < tplist.size(); i++) {
-            tpids[i] = ((Integer)ints[i]).intValue();
-        }
-
-        return tpids;
-    }
-
-    public int getCount(){
-        return count;
-    }
-
+public class CryptoTest {
+	public static void main(String[] args) {
+		try {
+			KeyFactory.getInstance("RSA");
+			System.out.println("Crypto test COMPLETED");
+		} catch (Exception e) {
+			System.out.println("Crypto test FAILED");
+			e.printStackTrace();
+		}
+	}
 }

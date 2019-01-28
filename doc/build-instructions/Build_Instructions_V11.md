@@ -33,6 +33,7 @@ A more complete set of build instructions are included here for multiple platfor
 - [Windows :ledger:](#windows)
 - [macOS :apple:](#macos)
 - [ARM :iphone:](#arm)
+- [AArch64](#aarch64)
 
 User documentation for the latest release of Eclipse OpenJ9 is available at the [Eclipse Foundation](https://www.eclipse.org/openj9/docs).
 If you build a binary from the current OpenJ9 source, new features and changes might be in place for the next release of OpenJ9. Draft user
@@ -133,15 +134,15 @@ tar -xzf freemarker.tgz freemarker-2.3.8/lib/freemarker.jar --strip=2
 rm -f freemarker.tgz
 ```
 
-4. Download and setup the boot JDK using the latest AdoptOpenJDK v9 build.
+4. Download and setup the boot JDK using the latest AdoptOpenJDK v11 build.
 ```
 cd /<my_home_dir>
-wget -O bootjdk10.tar.gz "https://api.adoptopenjdk.net/v2/binary/releases/openjdk10?openjdk_impl=openj9&os=linux&arch=x64&release=latest&type=jdk"
-tar -xzf bootjdk10.tar.gz
-rm -f bootjdk10.tar.gz
-mv $(ls | grep -i jdk) bootjdk10
+wget -O bootjdk11.tar.gz "https://api.adoptopenjdk.net/v2/binary/releases/openjdk11?openjdk_impl=openj9&os=linux&arch=x64&release=latest&type=jdk&heap_size=normal"
+tar -xzf bootjdk11.tar.gz
+rm -f bootjdk11.tar.gz
+mv $(ls | grep -i jdk) bootjdk11
 
-export JAVA_HOME="/<my_home_dir>/bootjdk10"
+export JAVA_HOME="/<my_home_dir>/bootjdk11"
 export PATH="${JAVA_HOME}/bin:${PATH}"
 ```
 
@@ -648,3 +649,9 @@ JCL      - 9da99f8b97 based on jdk-11+28)
 :iphone:
 
 :construction: We haven't created a full build process for ARM yet? Watch this space!
+
+----------------------------------
+
+## AArch64
+
+:construction: Build process for AArch64 (ARMv8 64-bit) Linux is under preparation.
