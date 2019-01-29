@@ -108,7 +108,11 @@ RUN wget -O - http://cpanmin.us | perl - --self-upgrade \
 RUN cd /usr/local \
   && wget -O gcc-7.tar.xz "https://ci.adoptopenjdk.net/userContent/gcc/gcc730+ccache.ppc64le.tar.xz" \
   && tar -xJf gcc-7.tar.xz --strip-components=1 \
-  && rm -rf gcc-7.tar.xz
+  && rm -rf gcc-7.tar.xz \
+  && ln -s /usr/local/bin/gcc-7.3 /usr/bin/cc \
+  && ln -s /usr/local/bin/gcc-7.3 /usr/bin/gcc \
+  && ln -s /usr/local/bin/g++-7.3 /usr/bin/g++ 
+
 
 #Building and setting up git version 2.5.3
 RUN yum -y update \

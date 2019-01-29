@@ -115,8 +115,11 @@ RUN wget -O - http://cpanmin.us | perl - --self-upgrade \
 RUN yum -y update \
   && yum -y install centos-release-scl \
   && yum -y install devtoolset-7-gcc-7.3* \
-  && yum -y install devtoolset-7-gcc-c++-7.3* devtoolset-2-gcc-gfortran-7.3* \
-  && yum clean all
+  && yum -y install devtoolset-7-gcc-c++-7.3* devtoolset-7-gcc-gfortran-7.3* \
+  && yum clean all \ 
+  && ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/cc \
+  && ln -s /opt/rh/devtoolset-7/root/usr/bin/gcc /usr/bin/gcc \
+  && ln -s /opt/rh/devtoolset-7/root/usr/bin/g++ /usr/bin/g++ 
 
 #Building and setting up git version 2.5.3
 RUN yum -y update \
