@@ -64,10 +64,10 @@ def cleanupBuilds(artifactory_server, upstreamJobName, ARTIFACTORY_NUM_ARTIFACTS
     jobToCheck.each() { job ->
         cleanupJobs["${job}"] = {
                 stage("Discover Stored Artifacts in ${job}"){
-                echo "Cleaning up ${jobToCheck}"
+                echo "Cleaning up ${job}"
                 echo "Keeping the latest ${ARTIFACTORY_NUM_ARTIFACTS} builds"
 
-                def request = httpRequest authentication: env.ARTIFACTORY_CREDS, consoleLogResponseBody: true, url: "${artifactory_server}/api/storage/${env.ARTIFACTORY_REPO}/${jobToCheck}"
+                def request = httpRequest authentication: env.ARTIFACTORY_CREDS, consoleLogResponseBody: true, url: "${artifactory_server}/api/storage/${env.ARTIFACTORY_REPO}/${job}"
 
                 data = readJSON text: request.getContent()
                 numberOfArtifacts = data.children.size()
@@ -79,7 +79,7 @@ def cleanupBuilds(artifactory_server, upstreamJobName, ARTIFACTORY_NUM_ARTIFACTS
 
                     for(i=0; i  < (numberOfArtifacts - ARTIFACTORY_NUM_ARTIFACTS); i++){
                         echo "Deleting Build #${folderNames[i]}"
-                        httpRequest authentication: env.ARTIFACTORY_CREDS, httpMode: 'DELETE', consoleLogResponseBody: true, url: "${artifactory_server}/${env.ARTIFACTORY_REPO}/${jobToCheck}/${folderNames[i]}"
+                        httpRequest authentication: env.ARTIFACTORY_CREDS, httpMode: 'DELETE', consoleLogResponseBody: true, url: "${artifactory_server}/${env.ARTIFACTORY_REPO}/${job}/${folderNames[i]}"
                     }
                 } else {
                     echo 'There are no artifacts to delete'
