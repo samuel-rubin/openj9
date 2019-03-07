@@ -50,7 +50,7 @@ timestamps {
     try{
         build job: 'CLEAN_ARTIFACTORY', wait: false, parameters: [
             string(name: 'JOB_TYPE', value: 'Number of Builds'),
-            string(name: 'ARTIFACTORY_NUM_ARTIFACTS', value: ''),
+            string(name: 'ARTIFACTORY_NUM_ARTIFACTS', value: '30'),
             string(name: 'JOB_TO_CHECK', value: get_downstream_job_names(SPEC, SDK_VERSION).join(','))
         ]
     }
