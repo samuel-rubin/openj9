@@ -30,6 +30,7 @@ import java.util.Date
 *             Time,                // This tells the script to delete all artifacts that are older that were created over x amount of days ago
 *             Number of Builds     // This tells the script to keep x amount of artifacts from a specific project
 * JOB_TO_CHECK: String – The folder to keep x amount of builds in 
+* ARTIFACTORY_NUM_ARTIFACTS - How many jobs to keep
 **/
 
 timestamps {
@@ -44,7 +45,8 @@ timestamps {
             cleanupTime(artifactory_server)
         } else if (params.JOB_TYPE == 'Number of Builds'){
             if (params.JOB_TO_CHECK){
-                cleanupBuilds(artifactory_server, params.JOB_TO_CHECK)
+                ARTIFACTORY_NUM_ARTIFACTS = (params.ARTIFACTORY_NUM_ARTIFACTS) ? params.ARTIFACTORY_NUM_ARTIFACTS : env.ARTIFACTORY_NUM_ARTIFACTS
+                cleanupBuilds(artifactory_server, params.JOB_TO_CHECK, params.ARTIFACTORY_NUM_ARTIFACTS)
             } else {
                 error 'Please input a job to cleanup'
             }
@@ -52,32 +54,39 @@ timestamps {
     }
 }
 
-def cleanupBuilds(artifactory_server, upstreamJobName){
-    def jobToCheck = upstreamJobName
-    def ARTIFACTORY_NUM_ARTIFACTS = env.ARTIFACTORY_NUM_ARTIFACTS as Integer 
+def cleanupBuilds(artifactory_server, upstreamJobName, ARTIFACTORY_NUM_ARTIFACTS){
+    def jobToCheck = upstreamJobName.split(',')
+    ARTIFACTORY_NUM_ARTIFACTS =  ARTIFACTORY_NUM_ARTIFACTS as Integer // This parameter may be a string
 
-    stage('Discover Stored Artifacts'){
-        echo "Cleaning up ${jobToCheck}"
-        echo "Keeping the latest ${ARTIFACTORY_NUM_ARTIFACTS} builds"
+    def cleanupJobs = [:]
 
-        def request = httpRequest authentication: env.ARTIFACTORY_CREDS, consoleLogResponseBody: true, url: "${artifactory_server}/api/storage/${env.ARTIFACTORY_REPO}/${jobToCheck}"
+    jobToCheck.each() { job ->
+        cleanupJobs["${job}"] = {
+                stage("Discover Stored Artifacts in ${job}"){
+                echo "Cleaning up ${jobToCheck}"
+                echo "Keeping the latest ${ARTIFACTORY_NUM_ARTIFACTS} builds"
 
-        data = readJSON text: request.getContent()
-        numberOfArtifacts = data.children.size()
-        echo "There are ${numberOfArtifacts} builds"
-    } 
-    stage('Delete Old Artifacts'){
-        if (numberOfArtifacts > ARTIFACTORY_NUM_ARTIFACTS){
-            def folderNames = getFolderNumbers(data.children.uri)
+                def request = httpRequest authentication: env.ARTIFACTORY_CREDS, consoleLogResponseBody: true, url: "${artifactory_server}/api/storage/${env.ARTIFACTORY_REPO}/${jobToCheck}"
 
-            for(i=0; i  < (numberOfArtifacts - ARTIFACTORY_NUM_ARTIFACTS); i++){
-                echo "Deleting Build #${folderNames[i]}"
-                httpRequest authentication: env.ARTIFACTORY_CREDS, httpMode: 'DELETE', consoleLogResponseBody: true, url: "${artifactory_server}/${env.ARTIFACTORY_REPO}/${jobToCheck}/${folderNames[i]}"
+                data = readJSON text: request.getContent()
+                numberOfArtifacts = data.children.size()
+                echo "There are ${numberOfArtifacts} builds"
+            } 
+            stage("Delete Old Artifacts in ${job}"){
+                if (numberOfArtifacts > ARTIFACTORY_NUM_ARTIFACTS){
+                    def folderNames = getFolderNumbers(data.children.uri)
+
+                    for(i=0; i  < (numberOfArtifacts - ARTIFACTORY_NUM_ARTIFACTS); i++){
+                        echo "Deleting Build #${folderNames[i]}"
+                        httpRequest authentication: env.ARTIFACTORY_CREDS, httpMode: 'DELETE', consoleLogResponseBody: true, url: "${artifactory_server}/${env.ARTIFACTORY_REPO}/${jobToCheck}/${folderNames[i]}"
+                    }
+                } else {
+                    echo 'There are no artifacts to delete'
+                } 
             }
-        } else {
-            echo 'There are no artifacts to delete'
-        } 
+        }
     }
+    parallel cleanupJobs
 }
 
 def getFolderNumbers(someVariable){

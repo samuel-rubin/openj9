@@ -47,6 +47,16 @@ timestamps {
             cleanWs notFailBuild: true, disableDeferredWipeout: false
         }
     }
+    try{
+        build job: 'CLEAN_ARTIFACTORY', wait: false, parameters: [
+            string(name: 'JOB_TYPE', value: 'Number of Builds'),
+            string(name: 'ARTIFACTORY_NUM_ARTIFACTS', value: ''),
+            string(name: 'JOB_TO_CHECK', value: get_downstream_job_names(SPEC, SDK_VERSION).join(','))
+        ]
+    }
+    catch (any){
+        echo 'Soemthing went wrong with the cleanup script'
+    }
 
     try {
         jobs = buildFile.workflow(SDK_VERSION, SPEC, SHAS, OPENJDK_REPO, OPENJDK_BRANCH, OPENJ9_REPO, OPENJ9_BRANCH, OMR_REPO, OMR_BRANCH, TESTS_TARGETS, VENDOR_TEST_REPOS_MAP, VENDOR_TEST_BRANCHES_MAP, VENDOR_TEST_DIRS_MAP, USER_CREDENTIALS_ID, BUILD_LIST, SETUP_LABEL, ghprbGhRepository, ghprbActualCommit, EXTRA_GETSOURCE_OPTIONS, EXTRA_CONFIGURE_OPTIONS, EXTRA_MAKE_OPTIONS, OPENJDK_CLONE_DIR, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, BUILD_NAME)

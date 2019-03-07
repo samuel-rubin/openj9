@@ -246,7 +246,7 @@ def build(JOB_NAME, OPENJDK_REPO, OPENJDK_BRANCH, SHAS, OPENJ9_REPO, OPENJ9_BRAN
                     string(name: 'EXTRA_CONFIGURE_OPTIONS', value: EXTRA_CONFIGURE_OPTIONS),
                     string(name: 'EXTRA_MAKE_OPTIONS', value: EXTRA_MAKE_OPTIONS),
                     string(name: 'OPENJDK_CLONE_DIR', value: OPENJDK_CLONE_DIR),
-                    booleanParam(name: 'AUTOMATIC_GENERATION', value: AUTOMATIC_GENERATION)]
+                    string(name: 'AUTOMATIC_GENERATION', value: AUTOMATIC_GENERATION)]
         return JOB
     }
 }
