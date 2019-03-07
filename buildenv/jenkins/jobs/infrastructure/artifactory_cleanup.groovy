@@ -56,6 +56,7 @@ timestamps {
 
 def cleanupBuilds(artifactory_server, upstreamJobName, ARTIFACTORY_NUM_ARTIFACTS){
     def jobToCheck = upstreamJobName.split(',')
+    echo "$jobToCheck"
     ARTIFACTORY_NUM_ARTIFACTS =  ARTIFACTORY_NUM_ARTIFACTS as Integer // This parameter may be a string
 
     def cleanupJobs = [:]
