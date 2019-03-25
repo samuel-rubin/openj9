@@ -44,8 +44,8 @@ timestamps {
         variableFile.parse_variables_file()
         variableFile.set_artifactory_config()
 
-	    def server = Artifactory.server params.ARTIFACTORY_SERVER
-        def ARTIFACTORY_SERVER_URL = sever.getUrl()
+	    def server = Artifactory.server env.ARTIFACTORY_SERVER
+        def ARTIFACTORY_SERVER_URL = server.getUrl()
         def ARTIFACTORY_REPO = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : env.ARTIFACTORY_REPO
         def artifactoryCreds = server.getCredentialsId()
         def JENKINS_DOMAIN = params.JENKINS_DOMAIN ? params.JENKINS_DOMAIN : ''
