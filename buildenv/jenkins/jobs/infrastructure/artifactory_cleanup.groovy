@@ -99,8 +99,8 @@ def cleanupBuilds(artifactory_server, artifactory_repo, jenkins_domain, jobToChe
 
 def getFolderNumbers(folderURI){
     def folderNumbers = []
-    someVariable.each{
-        folderURI.add(it.minus('/') as int )
+    folderURI.each{
+        folderNumbers.add(it.minus('/') as int )
     }
     return folderNumbers.sort()
 }
