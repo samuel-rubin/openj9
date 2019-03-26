@@ -46,7 +46,7 @@ timestamps {
 	    def server = Artifactory.server env.ARTIFACTORY_SERVER
         def ARTIFACTORY_SERVER_URL = server.getUrl()
         def ARTIFACTORY_REPO = params.ARTIFACTORY_REPO ? params.ARTIFACTORY_REPO : env.ARTIFACTORY_REPO
-        def artifactoryCreds = server.getCredentialsId()
+        def artifactoryCreds = env.ARTIFACTORY_CREDS
         println artifactoryCreds
         def JENKINS_DOMAIN = params.JENKINS_DOMAIN ? params.JENKINS_DOMAIN : ''
         def ARTIFACTORY_NUM_ARTIFACTS = params.ARTIFACTORY_NUM_ARTIFACTS ? params.ARTIFACTORY_NUM_ARTIFACTS : env.ARTIFACTORY_NUM_ARTIFACTS
