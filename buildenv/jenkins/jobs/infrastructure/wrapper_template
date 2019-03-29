@@ -80,8 +80,6 @@ pipelineJob(job_name){
         }
     }
     if (triggers){
-        if (!binding.hasVariable('triggers.cron')) triggers.cron = null
-        if (!binding.hasVariable('triggers.pull_request_builder')) triggers.pull_request_builder = null
         triggers{
             if (triggers.cron){
                 cron(triggers.cron)

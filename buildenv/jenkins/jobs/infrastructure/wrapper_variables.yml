@@ -118,9 +118,9 @@ PullRequest-OpenJ9:
     job_name: "PullRequest-OpenJ9"
     job_description: ""
     build_discarder_logs: 20
+    github_project: "https://github.com/eclipse/openj9/"
     triggers:
         pull_request_builder:
-            github_project: "https://github.com/eclipse/openj9/"
             trigger_phrase: "jenkins - bla"
             cron: "H/5 * * * *"
             admin_list: "OpenJ9"
