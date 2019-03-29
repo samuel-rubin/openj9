@@ -66,9 +66,9 @@ def getAdminList(admin_list_spec){
 
     switch(admin_list_spec) {
         case 'OpenJDK':
-            admin_list.add(all_admin_lists.extended)
+            admin_list.addAll(all_admin_lists.extended)
         case 'OpenJ9':
-            admin_list.add(all_admin_lists.committers)
+            admin_list.addAll(all_admin_lists.committers)
     }
     println admin_list
     return admin_list
