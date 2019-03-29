@@ -29,11 +29,12 @@ timeout(time: 6, unit: 'HOURS'){
             // This yaml file contains the specifications for the pipeline that will be created
             def VARIABLES = readYaml file: 'buildenv/jenkins/jobs/infrastructure/wrapper_variables.yml'
             def general = VARIABLES.get('general')
-            
+            println params
             // The parameters should be a boolean. This will cycle through all of the parameters
             params.each { param ->
                 // If the boolean parameter is true, it will create the specified wrapper job
-                if (param == true){
+                println param
+                if (param){
                     def specifications = VARIABLES.get(param.key)
                     if (specifications != null){
                         if (specifications.triggers && specifications.triggers.pull_request_builder){

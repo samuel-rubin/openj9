@@ -123,7 +123,21 @@ PullRequest-OpenJ9:
             github_project: "https://github.com/eclipse/openj9/"
             trigger_phrase: "jenkins - bla"
             cron: "H/5 * * * *"
-            admin_list: "Openj9"
+            admin_list: "OpenJ9"
+            blacklist_list: "blacklist"
+            context: "Pull Request..."
+            triggered_status: "Job Triggered"
+            started_status: "Jobs Running"
+PullRequest-OpenJDK:
+    job_name: "PullRequest-OpenJDK"
+    job_description: ""
+    build_discarder_logs: 20
+    triggers:
+        pull_request_builder:
+            github_project: "https://github.com/eclipse/openj9/"
+            trigger_phrase: "jenkins - bla"
+            cron: "H/5 * * * *"
+            admin_list: "OpenJDK"
             blacklist_list: "blacklist"
             context: "Pull Request..."
             triggered_status: "Job Triggered"
