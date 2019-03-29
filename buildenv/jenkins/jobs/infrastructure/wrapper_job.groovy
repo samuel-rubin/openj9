@@ -34,7 +34,7 @@ timeout(time: 6, unit: 'HOURS'){
             params.each { param ->
                 // If the boolean parameter is true, it will create the specified wrapper job
                 println param
-                if (param){
+                if (param.value == true){
                     def specifications = VARIABLES.get(param.key)
                     if (specifications != null){
                         if (specifications.triggers && specifications.triggers.pull_request_builder){

@@ -24,6 +24,9 @@ if (!binding.hasVariable('build_discarder_logs')) build_discarder_logs = 0
 if (!binding.hasVariable('build_discarder_artifacts')) build_discarder_artifacts = 0
 if (!binding.hasVariable('triggers')) triggers = null
 if (!binding.hasVariable('github_project')) github_project = null
+if (!binding.hasVariable('boolean_parameters')) boolean_parameters = null
+if (!binding.hasVariable('string_parameters')) string_parameters = null
+if (!binding.hasVariable('choice_parameters')) choice_parameters = null
 
 pipelineJob(job_name){
     description(job_description)
