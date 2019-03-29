@@ -55,62 +55,64 @@ OMR_Acceptance:
     job_description: ""
     build_discarder_logs: 20
     build_discarder_artifacts: 60
-    boolean_parameters:
-        Java8: true
-        Java11: true
-        Java12: false
-        Javanext: false
-        PROMOTE_OMR: true
-    string_parameters:
-        PLATFORMS: "all"
-        TEST_TARGETS: "sanity.functional"
-        RESTART_TIMEOUT: ""
-    choice_parameters:
-        OMR_BRANCH: 
-            - "master"
-        BUILD_IDENTIFIER: 
-            - "OMR-Acceptance"
-        AUTOMATIC_GENERATION:
-            - "false"
-            - "true"
+    parameters:
+        boolean_parameters:
+            Java8: true
+            Java11: true
+            Java12: false
+            Javanext: false
+            PROMOTE_OMR: true
+        string_parameters:
+            PLATFORMS: "all"
+            TEST_TARGETS: "sanity.functional"
+            RESTART_TIMEOUT: ""
+        choice_parameters:
+            OMR_BRANCH: 
+                - "master"
+            BUILD_IDENTIFIER: 
+                - "OMR-Acceptance"
+            AUTOMATIC_GENERATION:
+                - "false"
+                - "true"
 #===============================================#
 # Specifications for the release build pipeline
 #===============================================#
 Release: 
     job_name: "Pipeline-Release-Build"
     job_description: ""
-    boolean_parameters:
-        Java8: false
-        Java11: false
-        Java12: false
-        Javanext: false
-    string_parameters:
-        OPENJDK8_BRANCH: 
-        OPENJDK11_BRANCH:
-        OPENJDK12_BRANCH:
-        OPENJ9_BRANCH:
-        OMR_BRANCH:
-        PLATFORMS: "aix_ppc-64_cmprssptrs,linux_x86-64,linux_x86-64_cmprssptrs,linux_ppc-64_cmprssptrs_le,linux_390-64_cmprssptrs,win_x86-64_cmprssptrs,win_x86,osx_x86-64_cmprssptrs"
-        TEST_TARGETS: "sanity.functional,extended.functional,sanity.system,extended.system"
-    choice_parameters:
-        OPENJDK8_REPO:
-            - "https://github.com/ibmruntimes/openj9-openjdk-jdk8.git"
-        OPENJDK11_REPO:
-            - "https://github.com/ibmruntimes/openj9-openjdk-jdk11.git"
-        OPEMJDK12_REPO:
-            - "https://github.com/ibmruntimes/openj9-openjdk-jdk12.git"
-        OPENJ9_REPO:
-            - "https://github.com/eclipse/openj9.git"
-        OMR_REPO:
-            - "https://github.com/eclipse/openj9-omr.git"
-        LABEL:
-            - "worker"
-        BUILD_IDENTIFIER: 
-            - "Release"
-            - "Custom"
-        AUTOMATIC_GENERATION:
-            - "false"
-            - "true"
+    parameters:
+        boolean_parameters:
+            Java8: false
+            Java11: false
+            Java12: false
+            Javanext: false
+        string_parameters:
+            OPENJDK8_BRANCH: 
+            OPENJDK11_BRANCH:
+            OPENJDK12_BRANCH:
+            OPENJ9_BRANCH:
+            OMR_BRANCH:
+            PLATFORMS: "aix_ppc-64_cmprssptrs,linux_x86-64,linux_x86-64_cmprssptrs,linux_ppc-64_cmprssptrs_le,linux_390-64_cmprssptrs,win_x86-64_cmprssptrs,win_x86,osx_x86-64_cmprssptrs"
+            TEST_TARGETS: "sanity.functional,extended.functional,sanity.system,extended.system"
+        choice_parameters:
+            OPENJDK8_REPO:
+                - "https://github.com/ibmruntimes/openj9-openjdk-jdk8.git"
+            OPENJDK11_REPO:
+                - "https://github.com/ibmruntimes/openj9-openjdk-jdk11.git"
+            OPEMJDK12_REPO:
+                - "https://github.com/ibmruntimes/openj9-openjdk-jdk12.git"
+            OPENJ9_REPO:
+                - "https://github.com/eclipse/openj9.git"
+            OMR_REPO:
+                - "https://github.com/eclipse/openj9-omr.git"
+            LABEL:
+                - "worker"
+            BUILD_IDENTIFIER: 
+                - "Release"
+                - "Custom"
+            AUTOMATIC_GENERATION:
+                - "false"
+                - "true"
 #================#
 # Pipeline Job 
 #================#
@@ -121,7 +123,7 @@ PullRequest-OpenJ9:
     github_project: "https://github.com/eclipse/openj9/"
     triggers:
         pull_request_builder:
-            trigger_phrase: "jenkins - bla"
+            trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
             admin_list: "OpenJ9"
             blacklist_list: "blacklist"
@@ -129,13 +131,13 @@ PullRequest-OpenJ9:
             triggered_status: "Job Triggered"
             started_status: "Jobs Running"
 PullRequest-OpenJDK:
-    job_name: "PullRequest-OpenJDK"
+    job_name: "PullRequest-OpenJDK-${openJDK_version}"
     job_description: ""
     build_discarder_logs: 20
     triggers:
         pull_request_builder:
-            github_project: "https://github.com/eclipse/openj9/"
-            trigger_phrase: "jenkins - bla"
+            github_project: "https://github.com/ibmruntimes/openj9-openjdk-jdk"
+            trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
             admin_list: "OpenJDK"
             blacklist_list: "blacklist"
