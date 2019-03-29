@@ -22,7 +22,8 @@
 
 timeout(time: 6, unit: 'HOURS'){
     timestamps {
-        node ('master || worker'){
+        label = (params.LABEL ? params.LABEL : 'worker')
+        node (label){
             checkout scm
             
             // This yaml file contains the specifications for the pipeline that will be created
@@ -32,10 +33,15 @@ timeout(time: 6, unit: 'HOURS'){
             // The parameters should be a boolean. This will cycle through all of the parameters
             params.each { param ->
                 // If the boolean parameter is true, it will create the specified wrapper job
-                if (param){
+                if (param == true){
                     def specifications = VARIABLES.get(param.key)
                     if (specifications != null){
+                        if (specifications.triggers && specifications.triggers.pull_request_builder){
+                            specifications.triggers.pull_request_builder.admin_list = getAdminList(specifications.triggers.pull_request_builder.admin_list)
+                        }
                         createWrapper(general, specifications)
+                    } else {
+                        echo "ERROR: ${param.key} is not specified in the variable function"
                     }
                 }
             }
@@ -47,15 +53,21 @@ def createWrapper(GENERAL_SPECIFICATIONS, SPECIFICATIONS){
     stage("Build ${SPECIFICATIONS.job_name}"){
         def parameters = [:]
 
-        // This will go through all of the parameters and add them to the template
-        GENERAL_SPECIFICATIONS.each { general_specification ->
-            parameters.put(general_specification.key, general_specification.value)
-        }
-        SPECIFICATIONS.each { specification ->
-            parameters.put(specification.key, specification.value)
-        }
+        parameters = GENERAL_SPECIFICATIONS + SPECIFICATIONS
         
         jobDsl targets: 'buildenv/jenkins/jobs/infrastructure/wrapper_template', ignoreExisting: false, additionalParameters: parameters
     }
+}
 
+def getAdminList(admin_list_spec){
+    def admin_list = []
+    def all_admin_lists = readYaml file: 'buildenv/jenkins/variables/admin_list.yml'
+
+    switch(admin_list_spec) {
+        case 'OpenJDK':
+            admin_list.add(all_admin_lists.extended)
+        case 'OpenJ9':
+            admin_list.add(all_admin_lists.committers)
+    }
+    return admin_list
 }

@@ -46,6 +46,11 @@ pipelineJob(job_name){
             artifactNumToKeep(build_discarder_artifacts)
         }
     }
+    if (github_project){
+        properties {
+            githubProjectUrl(github_project)
+        }
+    }
     parameters {
         boolean_parameters.each{ boolean_parameter ->
             booleanParam{
@@ -72,8 +77,26 @@ pipelineJob(job_name){
     }
     if (triggers){
         triggers{
-        if (triggers.cron){
+            if (triggers.cron){
                 cron(triggers.cron)
+            }
+            if (triggers.pull_request_builder){
+                githubPullRequest {
+                    admins(admin_list)
+                    blackListCommitAuthor(blacklist_list) 
+                    cron(cron)
+                    triggerPhrase(trigger_phrase)
+                    onlyTriggerPhrase()
+                    useGitHubHooks()
+                    
+                    extensions {
+                        commitStatus {
+                            context(context)
+                            triggeredStatus(triggered_status)
+                            startedStatus(started_status)
+                        }
+                    }
+                }
             } 
         }
     }
