@@ -70,5 +70,6 @@ def getAdminList(admin_list_spec){
         case 'OpenJ9':
             admin_list.add(all_admin_lists.committers)
     }
+    println admin_list
     return admin_list
 }
