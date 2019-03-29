@@ -23,6 +23,7 @@
 if (!binding.hasVariable('build_discarder_logs')) build_discarder_logs = 0
 if (!binding.hasVariable('build_discarder_artifacts')) build_discarder_artifacts = 0
 if (!binding.hasVariable('triggers')) triggers = null
+if (!binding.hasVariable('github_project')) github_project = null
 
 pipelineJob(job_name){
     description(job_description)
@@ -76,24 +77,26 @@ pipelineJob(job_name){
         }
     }
     if (triggers){
+        if (!binding.hasVariable('triggers.cron')) triggers.cron = null
+        if (!binding.hasVariable('triggers.pull_request_builder')) triggers.pull_request_builder = null
         triggers{
             if (triggers.cron){
                 cron(triggers.cron)
             }
             if (triggers.pull_request_builder){
                 githubPullRequest {
-                    admins(admin_list)
-                    blackListCommitAuthor(blacklist_list) 
-                    cron(cron)
-                    triggerPhrase(trigger_phrase)
+                    admins(triggers.pull_request_builder.admin_list)
+                    blackListCommitAuthor(triggers.pull_request_builder.blacklist_list) 
+                    cron(triggers.pull_request_builder.cron)
+                    triggerPhrase(triggers.pull_request_builder.trigger_phrase)
                     onlyTriggerPhrase()
                     useGitHubHooks()
                     
                     extensions {
                         commitStatus {
-                            context(context)
-                            triggeredStatus(triggered_status)
-                            startedStatus(started_status)
+                            context(triggers.pull_request_builder.context)
+                            triggeredStatus(triggers.pull_request_builder.triggered_status)
+                            startedStatus(triggers.pull_request_builder.started_status)
                         }
                     }
                 }
