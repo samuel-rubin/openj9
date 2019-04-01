@@ -24,9 +24,8 @@ if (!binding.hasVariable('build_discarder_logs')) build_discarder_logs = 0
 if (!binding.hasVariable('build_discarder_artifacts')) build_discarder_artifacts = 0
 if (!binding.hasVariable('triggers')) triggers = null
 if (!binding.hasVariable('github_project')) github_project = null
-if (!binding.hasVariable('boolean_parameters')) boolean_parameters = null
-if (!binding.hasVariable('string_parameters')) string_parameters = null
-if (!binding.hasVariable('choice_parameters')) choice_parameters = null
+if (!binding.hasVariable('parameters')) parameters = null
+
 
 pipelineJob(job_name){
     description(job_description)
@@ -55,27 +54,29 @@ pipelineJob(job_name){
             githubProjectUrl(github_project)
         }
     }
-    parameters {
-        boolean_parameters.each{ boolean_parameter ->
-            booleanParam{
-                name(boolean_parameter.key)
-                defaultValue(boolean_parameter.value)
-                description(parameter_descriptions.get(boolean_parameter.key))
+    if (parameters){
+        parameters {
+            parameters.boolean_parameters.each{ boolean_parameter ->
+                booleanParam{
+                    name(boolean_parameter.key)
+                    defaultValue(boolean_parameter.value)
+                    description(parameter_descriptions.get(boolean_parameter.key))
+                }
             }
-        }
-        string_parameters.each { string_parameter ->
-            stringParam{
-                name(string_parameter.key)
-                defaultValue(string_parameter.value)
-                description(parameter_descriptions.get(string_parameter.key))
-                trim(true)
+            parameters.string_parameters.each { string_parameter ->
+                stringParam{
+                    name(string_parameter.key)
+                    defaultValue(string_parameter.value)
+                    description(parameter_descriptions.get(string_parameter.key))
+                    trim(true)
+                }
             }
-        }
-        choice_parameters.each{ choice_parameter ->
-            choiceParam{
-                name(choice_parameter.key)
-                choices(choice_parameter.value)
-                description(parameter_descriptions.get(choice_parameter.key))
+            parameters.choice_parameters.each{ choice_parameter ->
+                choiceParam{
+                    name(choice_parameter.key)
+                    choices(choice_parameter.value)
+                    description(parameter_descriptions.get(choice_parameter.key))
+                }
             }
         }
     }

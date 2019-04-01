@@ -29,22 +29,23 @@ Nightly:
     job_description: ""
     build_discarder_logs: 10
     build_discarder_artifacts: 60
-    boolean_parameters:
-        Java8: true
-        Java11: true
-        Java12: false
-        Javanext: false
-    string_parameters:
-        PLATFORMS: "aix_ppc-64_cmprssptrs,linux_x86-64,linux_x86-64_cmprssptrs,linux_x86-64_cmprssptrs_cmake,linux_ppc-64_cmprssptrs_le,linux_390-64_cmprssptrs,win_x86-64_cmprssptrs,win_x86,osx_x86-64_cmprssptrs"
-        TEST_TARGETS: "sanity.functional,extended.functional,sanity.system,extended.system"
-        RESTART_TIMEOUT: "10"
-    choice_parameters:
-        BUILD_IDENTIFIER: 
-            - "Nightly"
-            - "Custom"
-        AUTOMATIC_GENERATION:
-            - "false"
-            - "true"
+    parameters:
+        boolean_parameters:
+            Java8: true
+            Java11: true
+            Java12: false
+            Javanext: false
+        string_parameters:
+            PLATFORMS: "aix_ppc-64_cmprssptrs,linux_x86-64,linux_x86-64_cmprssptrs,linux_x86-64_cmprssptrs_cmake,linux_ppc-64_cmprssptrs_le,linux_390-64_cmprssptrs,win_x86-64_cmprssptrs,win_x86,osx_x86-64_cmprssptrs"
+            TEST_TARGETS: "sanity.functional,extended.functional,sanity.system,extended.system"
+            RESTART_TIMEOUT: "10"
+        choice_parameters:
+            BUILD_IDENTIFIER: 
+                - "Nightly"
+                - "Custom"
+            AUTOMATIC_GENERATION:
+                - "false"
+                - "true"
     triggers:
         cron: "@midnight"
 #================================================#
