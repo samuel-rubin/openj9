@@ -140,7 +140,7 @@ PullRequest-OpenJDK:
         pull_request_builder:
             trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
-            admin_list: "extensions"
+            admin_list: "Extentions"
             blacklist_list: "blacklist"
             context: "Pull Request..."
             triggered_status: "Job Triggered"
