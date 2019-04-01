@@ -29,6 +29,7 @@ timeout(time: 6, unit: 'HOURS'){
             // This yaml file contains the specifications for the pipeline that will be created
             def VARIABLES = readYaml file: 'buildenv/jenkins/jobs/infrastructure/wrapper_variables.yml'
             def general = VARIABLES.get('general')
+            def version
             // The parameters should be a boolean. This will cycle through all of the parameters
             params.each { param ->
                 // If the boolean parameter is true, it will create the specified wrapper job
@@ -86,6 +87,5 @@ def getAdminList(admin_list_spec){
             admin_list.addAll(all_admin_lists.openj9)
         break
     }
-    println admin_list
     return admin_list
 }
