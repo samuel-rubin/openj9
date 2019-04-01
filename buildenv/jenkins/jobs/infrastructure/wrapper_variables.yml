@@ -127,7 +127,7 @@ PullRequest-OpenJ9:
             trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
             admin_list: "OpenJ9"
-            blacklist_list: "blacklist"
+            blacklist: "kenrai123"
             context: "Pull Request..."
             triggered_status: "Job Triggered"
             started_status: "Jobs Running"
@@ -141,8 +141,8 @@ PullRequest-OpenJDK:
             trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
             admin_list: "Extentions"
-            blacklist_list: "blacklist"
-            context: "Pull Request..."
+            blacklist: "kenrai123"
+            context: "Pull Request - OpenJDK"
             triggered_status: "Job Triggered"
             started_status: "Jobs Running"
 #==============================================#

@@ -92,7 +92,7 @@ pipelineJob(job_name){
             if (triggers.pull_request_builder){
                 githubPullRequest {
                     admins(triggers.pull_request_builder.admin_list)
-                    blackListCommitAuthor(triggers.pull_request_builder.blacklist_list) 
+                    blackListCommitAuthor(triggers.pull_request_builder.blacklist) 
                     cron(triggers.pull_request_builder.cron)
                     triggerPhrase(triggers.pull_request_builder.trigger_phrase)
                     onlyTriggerPhrase()
