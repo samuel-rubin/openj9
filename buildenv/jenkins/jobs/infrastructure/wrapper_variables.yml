@@ -131,15 +131,15 @@ PullRequest-OpenJ9:
             triggered_status: "Job Triggered"
             started_status: "Jobs Running"
 PullRequest-OpenJDK:
-    job_name: "PullRequest-OpenJDK-${openJDK_version}"
+    job_name: "PullRequest-OpenJDK"
     job_description: ""
     build_discarder_logs: 20
+    github_project: "https://github.com/ibmruntimes/openj9-openjdk-jdk"
     triggers:
         pull_request_builder:
-            github_project: "https://github.com/ibmruntimes/openj9-openjdk-jdk"
             trigger_phrase: .*\bjenkins\s+(compile|test)\b.*
             cron: "H/5 * * * *"
-            admin_list: "OpenJDK"
+            admin_list: "extensions"
             blacklist_list: "blacklist"
             context: "Pull Request..."
             triggered_status: "Job Triggered"

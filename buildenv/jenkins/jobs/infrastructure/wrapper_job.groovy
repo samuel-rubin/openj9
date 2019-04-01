@@ -29,16 +29,29 @@ timeout(time: 6, unit: 'HOURS'){
             // This yaml file contains the specifications for the pipeline that will be created
             def VARIABLES = readYaml file: 'buildenv/jenkins/jobs/infrastructure/wrapper_variables.yml'
             def general = VARIABLES.get('general')
-            println params
             // The parameters should be a boolean. This will cycle through all of the parameters
             params.each { param ->
                 // If the boolean parameter is true, it will create the specified wrapper job
-                println param
                 if (param.value == true){
-                    def specifications = VARIABLES.get(param.key)
-                    if (specifications != null){
+                    def name
+                    if (param.key.contains('OpenJDK')){
+                        def versionStartIndex = param.key.indexOf('OpenJDK') + 7 // 7 is the length og OpenJDK
+                        def versionLastIndex = param.key.length()
+                        version = param.key.substring(versionStartIndex, versionLastIndex)
+                        name = param.key - version
+                    } else {
+                        name = param.key
+                    }
+                    def specifications = VARIABLES.get(name)
+                    if (version){
+                        specifications.job_name = specifications.job_name + version
+                    }
+                    if (specifications){
                         if (specifications.triggers && specifications.triggers.pull_request_builder){
                             specifications.triggers.pull_request_builder.admin_list = getAdminList(specifications.triggers.pull_request_builder.admin_list)
+                            if (version){
+                                specifications.github_project = specifications.github_project + version
+                            }
                         }
                         createWrapper(general, specifications)
                     } else {
@@ -65,10 +78,13 @@ def getAdminList(admin_list_spec){
     def all_admin_lists = readYaml file: 'buildenv/jenkins/variables/admin_list.yml'
 
     switch(admin_list_spec) {
-        case 'OpenJDK':
-            admin_list.addAll(all_admin_lists.extended)
+        case 'Extentions':
+            admin_list.addAll(all_admin_lists.extensions)
+            admin_list.addAll(all_admin_lists.openj9)
+        break
         case 'OpenJ9':
-            admin_list.addAll(all_admin_lists.committers)
+            admin_list.addAll(all_admin_lists.openj9)
+        break
     }
     println admin_list
     return admin_list

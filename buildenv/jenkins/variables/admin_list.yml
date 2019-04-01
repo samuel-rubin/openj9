@@ -1,4 +1,4 @@
-committers:
+openj9:
   - 0xdaryl
   - andrewcraik
   - amicic
@@ -21,7 +21,7 @@ committers:
   - ymanton
   - zl-wang
 
-extended: 
+extensions: 
   - andrew-m-leonard
   - archanaNogriya
   - ben-walsh
