@@ -43,10 +43,14 @@ pipelineJob(job_name){
             lightweight(true)
         }
     }
-    if (build_discarder_logs && build_discarder_artifacts){
+    if (build_discarder_logs || build_discarder_artifacts){
         logRotator{
-            numToKeep(build_discarder_logs)
-            artifactNumToKeep(build_discarder_artifacts)
+            if (build_discarder_logs){
+                numToKeep(build_discarder_logs)
+            }
+            if (build_discarder_artifacts){
+                artifactNumToKeep(build_discarder_artifacts)
+            }
         }
     }
     if (github_project){
