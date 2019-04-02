@@ -56,6 +56,21 @@ timestamps {
         add_badges(downstreamBuilds)
         add_summary_badge(downstreamBuilds)
     }
+    try {
+        def downstream_job_names = buildFile.get_downstream_job_names(SPEC, SDK_VERSION)
+        downstream_job_names.each(){ job_type, job_name ->
+            def cleanup_job_params = [
+                string(name: 'JOB_TYPE', value: 'COUNT'),
+                string(name: 'JOB_TO_CHECK', value: 'job_name'),
+                string(name: 'ARTIFACTORY_SERVER', value: env.ARTIFACTORY_SERVER),
+                string(name: 'ARTIFACTORY_REPO', value: env.ARTIFACTORY_REPO),
+                string(name: 'ARTIFACTORY_NUM_ARTIFACTS', value: env.ARTIFACTORY_NUM_ARTIFACTS)]
+
+            buildbuild job: 'Cleanup_Artifactory', parameters: cleanup_job_params, wait: false
+        }
+    } catch (any){
+        echo 'The Cleanup_Artifactory is not availible'
+    }
 }
 
 /*
