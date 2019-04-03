@@ -359,9 +359,13 @@ def workflow(SDK_VERSION, SPEC, SHAS, OPENJDK_REPO, OPENJDK_BRANCH, OPENJ9_REPO,
             CUSTOMIZED_SDK_URL = BUILD_JOB_ENV['CUSTOMIZED_SDK_URL']
             ARTIFACTORY_CREDS = BUILD_JOB_ENV['ARTIFACTORY_CREDS']
             ARTIFACTORY_SERVER = BUILD_JOB_ENV['ARTIFACTORY_SERVER']
+            ARTIFACTORY_REPO = BUILD_JOB_ENV['ARTIFACTORY_REPO']
+            ARTIFACTORY_NUM_ARTIFACTS = BUILD_JOB_ENV['ARTIFACTORY_NUM_ARTIFACTS']
             echo "Passing CUSTOMIZED_SDK_URL:'${CUSTOMIZED_SDK_URL}'"
             echo "Using ARTIFACTORY_CREDS:'${ARTIFACTORY_CREDS}'"
             echo "Using ARTIFACTORY_SERVER:'${ARTIFACTORY_SERVER}'"
+
+            cleanup_artifactory(BUILD_JOB_NAME, ARTIFACTORY_SERVER, ARTIFACTORY_REPO, ARTIFACTORY_NUM_ARTIFACTS)
         }
         for (name in TARGET_NAMES) {
             def TEST_FLAG = ''
@@ -373,6 +377,7 @@ def workflow(SDK_VERSION, SPEC, SHAS, OPENJDK_REPO, OPENJDK_BRANCH, OPENJ9_REPO,
 
             testjobs["${TEST_JOB_NAME}"] = {
                 if (ARTIFACTORY_CREDS) {
+                    cleanup_artifactory(TEST_JOB_NAME, ARTIFACTORY_SERVER, ARTIFACTORY_REPO, ARTIFACTORY_NUM_ARTIFACTS)
                     jobs["${TEST_JOB_NAME}"] = build_with_artifactory(TEST_JOB_NAME, VARIABLE_FILE, VENDOR_REPO, VENDOR_BRANCH, VENDOR_CREDENTIALS_ID, TEST_NODE, OPENJ9_REPO, OPENJ9_BRANCH, SHAS['OPENJ9'], VENDOR_TEST_REPOS, VENDOR_TEST_BRANCHES, VENDOR_TEST_SHAS, VENDOR_TEST_DIRS, USER_CREDENTIALS_ID, BUILD_LIST, CUSTOMIZED_SDK_URL, ARTIFACTORY_CREDS, TEST_FLAG, BUILD_IDENTIFIER, ghprbGhRepository, ghprbActualCommit, GITHUB_SERVER, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH)
                 } else {
                     jobs["${TEST_JOB_NAME}"] = build_with_one_upstream(TEST_JOB_NAME, BUILD_JOB_NAME, jobs["build"].getNumber(), VARIABLE_FILE, VENDOR_REPO, VENDOR_BRANCH, VENDOR_CREDENTIALS_ID, TEST_NODE, OPENJ9_REPO, OPENJ9_BRANCH, SHAS['OPENJ9'], VENDOR_TEST_REPOS, VENDOR_TEST_BRANCHES, VENDOR_TEST_SHAS, VENDOR_TEST_DIRS, USER_CREDENTIALS_ID, BUILD_LIST, TEST_FLAG, BUILD_IDENTIFIER, ghprbGhRepository, ghprbActualCommit, GITHUB_SERVER, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH)
@@ -482,6 +487,22 @@ def get_downstream_job_names(spec, version) {
     }
 
     return downstreamJobNames
+}
+
+def cleanup_artifactory(job_name, artifactory_server, artifactory_repo, artifactory_num_artifacts){
+    try {
+        def downstream_job_names = buildFile.get_downstream_job_names(SPEC, SDK_VERSION)
+        def cleanup_job_params = [
+            string(name: 'JOB_TYPE', value: 'COUNT'),
+            string(name: 'JOB_TO_CHECK', value: 'job_name'),
+            string(name: 'ARTIFACTORY_SERVER', value: artifactory_repo),
+            string(name: 'ARTIFACTORY_REPO', value: artifactory_repo),
+            string(name: 'ARTIFACTORY_NUM_ARTIFACTS', value: artifactory_num_artifacts)]
+
+        buildbuild job: 'Cleanup_Artifactory', parameters: cleanup_job_params, wait: false
+    } catch (any){
+        echo 'The Cleanup_Artifactory job is not availible'
+    }
 }
 
 return this
