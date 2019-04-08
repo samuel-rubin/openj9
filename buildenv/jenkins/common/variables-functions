@@ -1010,7 +1010,7 @@ def create_job(JOB_NAME, SDK_VERSION, SPEC, downstreamJobType){
     DISCARDER_NUM_ARTIFACTS = get_value(VARIABLES.build_discarder.artifacts, downstreamJobType)
 
     def params = [:]
-    params.put('JOB_NAME', 'Sam-' + JOB_NAME)
+    params.put('JOB_NAME', JOB_NAME)
     params.put('SDK_VERSION', SDK_VERSION)
     params.put('PLATFORM', SPEC)
     params.put('VARIABLE_FILE_DEFAULT', VARIABLE_FILE_DEFAULT)
