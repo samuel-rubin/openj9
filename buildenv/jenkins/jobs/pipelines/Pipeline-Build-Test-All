@@ -153,6 +153,8 @@ try {
                     def BUILD_NODES = get_node_labels(params.BUILD_NODE_LABELS, BUILD_SPECS.keySet())
                     def TEST_NODES = get_node_labels(params.TEST_NODE_LABELS, BUILD_SPECS.keySet())
 
+                    def job_generation = [:]
+
                     BUILD_SPECS.each { SPEC, SDK_VERSIONS ->
                         if (VARIABLES."${SPEC}") {
                             SDK_VERSIONS.each { SDK_VERSION ->
@@ -186,13 +188,14 @@ try {
                                 }
 
                                 if (AUTOMATIC_GENERATION != 'false'){
-                                    variableFile.create_job(job_name, SDK_VERSION, SPEC, 'pipeline', buildFile.convert_build_identifier(BUILD_IDENTIFIER))
+                                    job_generation["${job_name}"] = { variableFile.create_job(job_name, SDK_VERSION, SPEC, 'pipeline', buildFile.convert_build_identifier(BUILD_IDENTIFIER)) }
                                 }
 
                                 builds["${job_name}"] = { build(job_name, REPO, BRANCH, SHAS, OPENJ9_REPO, OPENJ9_BRANCH, OMR_REPO, OMR_BRANCH, SPEC, SDK_VERSION, BUILD_NODE, TEST_NODE, EXTRA_GETSOURCE_OPTIONS, EXTRA_CONFIGURE_OPTIONS, EXTRA_MAKE_OPTIONS, OPENJDK_CLONE_DIR, ADOPTOPENJDK_REPO, ADOPTOPENJDK_BRANCH, AUTOMATIC_GENERATION, CUSTOM_DESCRIPTION) }
                             }
                         }
                     }
+                    parallel job_generation
                 } finally {
                     // disableDeferredWipeout also requires deleteDirs. See https://issues.jenkins-ci.org/browse/JENKINS-54225
                     cleanWs notFailBuild: true, disableDeferredWipeout: true, deleteDirs: true
