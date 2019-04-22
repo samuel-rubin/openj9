@@ -257,6 +257,12 @@ x86-64_linux:
       11: 'source /opt/rh/devtoolset-7/enable'
       12: 'source /opt/rh/devtoolset-7/enable'
       next: 'source /opt/rh/devtoolset-7/enable'
+  excluded_tests:
+    8:
+      - 'sanity.functional'
+      - 'sanity.system'
+      - 'extended.functional'
+      - 'extended.system'
 #========================================#
 # Linux x86 64bits Compressed Pointers /w CMake
 #========================================#
