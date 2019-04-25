@@ -25,7 +25,7 @@
 # Specifications for the pipeline job that will be built nightly
 #================================================================#
 Nightly:
-    job_name: "Pipeline-Build-Test-All"
+    job_name: "Sam-Pipeline-Build-Test-All"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OpenJ9 nightly build<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
     build_discarder_logs: 10
     build_discarder_artifacts: 60
@@ -53,7 +53,7 @@ Nightly:
 # Specifications for the OMR Acceptance pipeline
 #================================================#
 OMR_Acceptance: 
-    job_name: "Pipeline-OMR-Acceptance"
+    job_name: "Sam-Pipeline-OMR-Acceptance"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OMR Acceptance<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
     extra_git_options:
         depth: 0
@@ -86,7 +86,7 @@ OMR_Acceptance:
 # Specifications for the release build pipeline
 #===============================================#
 Release: 
-    job_name: "Pipeline-Release-Build"
+    job_name: "Sam-Pipeline-Release-Build"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OpenJ9 release build<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
     parameters:
         boolean_parameters:
@@ -123,7 +123,7 @@ Release:
 # Specifications for Pull Request Builds
 #========================================#
 PullRequest-OpenJ9:
-    job_name: "PullRequest-OpenJ9"
+    job_name: "Sam-PullRequest-OpenJ9"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OpenJ9 pull requests<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
     build_discarder_logs: 20
     github_project: "https://github.com/eclipse/openj9/"
@@ -138,7 +138,7 @@ PullRequest-OpenJ9:
             started_status: "Jobs Running"
 
 PullRequest-OpenJDK:
-    job_name: "PullRequest-OpenJDK"
+    job_name: "Sam-PullRequest-OpenJDK"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OpenJDK pull requests<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
     build_discarder_logs: 20
     github_project: "https://github.com/ibmruntimes/openj9-openjdk-jdk"
