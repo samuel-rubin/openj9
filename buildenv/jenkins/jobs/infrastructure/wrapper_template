@@ -26,9 +26,13 @@ if (!binding.hasVariable('build_discarder_artifacts')) build_discarder_artifacts
 if (!binding.hasVariable('triggers')) triggers = null
 if (!binding.hasVariable('github_project')) github_project = null
 if (!binding.hasVariable('parameters')) parameters = null
+if (!binding.hasVariable('quiet_period')) quiet_period = -1
 
 
 pipelineJob(job_name){
+    if (quiet_period > 0){
+        quietPeriod(quiet_period)
+    }
     description(job_description)
     definition{
         cpsScm{

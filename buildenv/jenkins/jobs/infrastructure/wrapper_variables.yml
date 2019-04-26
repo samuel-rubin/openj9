@@ -55,6 +55,7 @@ Nightly:
 OMR_Acceptance: 
     job_name: "Sam-Pipeline-OMR-Acceptance"
     job_description: "<h1>THIS IS AN AUTOMATICALLY GENERATED JOB DO NOT MODIFY, IT WILL BE OVERWRITTEN.</h1<p>This job defines the OMR Acceptance<p>This job is defined in wrapper_template and wrapper_variables.yml in the openj9 repo, if you wish to change it modify that</p>"
+    quiet_period: 1200
     extra_git_options:
         depth: 0
         reference_repo: "/home/jenkins/openjdk_cache"
